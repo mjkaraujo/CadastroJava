@@ -9,21 +9,19 @@ import java.sql.*;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
- * @author mjk_a
+ * @author mjk_araujo
  */
 public class MainFrame extends javax.swing.JFrame {
-    
+
     public Connection conn = null;
     public Statement stmt;
     public ResultSet rs;
 
-
     public MainFrame() {
         initComponents();
-        
+
         abas.setEnabledAt(1, false);
     }
 
@@ -190,6 +188,11 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel8.setText("CADASTRO");
 
         btnLimpar.setText("Limpar");
+        btnLimpar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimparActionPerformed(evt);
+            }
+        });
 
         btnPrimeiro.setText("<< Primeiro");
         btnPrimeiro.addActionListener(new java.awt.event.ActionListener() {
@@ -311,104 +314,104 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void btnEntreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntreActionPerformed
         // TODO add your handling code here:
-        
+
         String senha = new String(txtPassword.getPassword());
-        
-        if(txtUser.getText().equals("adm") && senha.equals("123")){
+
+        if (txtUser.getText().equals("adm") && senha.equals("123")) {
             abas.setEnabledAt(1, true);
             abas.setSelectedIndex(1);
         } else {
-            
+
             JOptionPane.showMessageDialog(null,
-                "Dados de login incorretos",
-                "Mensagem", JOptionPane.INFORMATION_MESSAGE);
+                    "Dados de login incorretos",
+                    "Mensagem", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnEntreActionPerformed
 
     private void abreTabela() {
-        String query1 = "Select * from curso";
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/dbaula4",
-             "root", "123");
-            stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
-            ResultSet.CONCUR_READ_ONLY);
-            rs = stmt.executeQuery(query1);//executando o comando sql
-            rs.first();//estamos movendo o cursor para o primeiro registro pesquisado
-            atualiza_campos();
-             //conteudo da coluna sigla
-        } catch (ClassNotFoundException e) {
-            System.out.println(e);
-             } catch (SQLException e) {
-            System.out.println(e);
-        }
-    }
-    
-    
-    private void btnInserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInserirActionPerformed
-        // TODO add your handling code here:
-        
+        String query1 = "Select * from cadastro";
         try {
             Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection("jdbc:mysql://localhost/db_java",
-             "root", "");
+                    "root", "");
             stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
-            ResultSet.CONCUR_UPDATABLE);
-             String sql = "INSERT INTO cadastro VALUES('"
-             + txtSigla.getText() + "','"
-             + txtNome.getText() + "','"
-             + txtDesc.getText() + "')";
+                    ResultSet.CONCUR_READ_ONLY);
+            rs = stmt.executeQuery(query1);//executando o comando sql
+            rs.first();//estamos movendo o cursor para o primeiro registro pesquisado
+            atualiza_campos();
+            //conteudo da coluna sigla
+        } catch (ClassNotFoundException e) {
+            System.out.println(e);
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+
+
+    private void btnInserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInserirActionPerformed
+        // TODO add your handling code here:
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/db_java",
+                    "root", "");
+            stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            String sql = "INSERT INTO cadastro VALUES('"
+                    + txtSigla.getText() + "','"
+                    + txtNome.getText() + "','"
+                    + txtDesc.getText() + "')";
             //JOptionPane.showMessageDialog(null, sql);
             int i = 0;
-             i = stmt.executeUpdate(sql);//executando o comando sql
-            stmt.close();
-            if (i > 0) {
-            JOptionPane.showMessageDialog(null, "Cadastro realizado com sucesso!");
-            abreTabela();
-             }
-             } catch (ClassNotFoundException e) {
-            System.out.println(e);
-             } catch (SQLException e) {
-            System.out.println(e);
-            }
-    }//GEN-LAST:event_btnInserirActionPerformed
-
-    private void atualiza_campos(){
-        try {
-           txtSigla.setText("" + rs.getString("sigla"));
-           txtNome.setText("" + rs.getString("nome"));
-           txtDesc.setText("" + rs.getString("descricao"));
-      } catch (SQLException e) {
-           System.out.println(e);
-    }
-    }
-    
-    private void btnAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarActionPerformed
-        String query1 = "UPDATE cadastro SET sigla=";
-        String a = txtSigla.getText();
-            try {
-            Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/db_java", "root", "");
-            stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
-            ResultSet.CONCUR_UPDATABLE);
-             String sql = query1 + "'" + txtSigla.getText() + "',"
-            + "nome='" + txtNome.getText() + "',"
-            + "descricao='" + txtDesc.getText()
-             + "' where sigla=" + "'" + txtSigla.getText() + "'";
-            int i = 0;
             i = stmt.executeUpdate(sql);//executando o comando sql
-            int y = 0;
             stmt.close();
-             y = stmt.CLOSE_CURRENT_RESULT;
             if (i > 0) {
-            JOptionPane.showMessageDialog(null, "Cadastro alterado com sucesso!");
-            abreTabela();
+                JOptionPane.showMessageDialog(null, "Cadastro realizado com sucesso!");
+                abreTabela();
             }
         } catch (ClassNotFoundException e) {
             System.out.println(e);
         } catch (SQLException e) {
             System.out.println(e);
+        }
+    }//GEN-LAST:event_btnInserirActionPerformed
+
+    private void atualiza_campos() {
+        try {
+            txtSigla.setText("" + rs.getString("sigla"));
+            txtNome.setText("" + rs.getString("nome"));
+            txtDesc.setText("" + rs.getString("descricao"));
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+
+    private void btnAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarActionPerformed
+        String query1 = "UPDATE cadastro SET sigla=";
+        String a = txtSigla.getText();
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/db_java", "root", "");
+            stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            String sql = query1 + "'" + txtSigla.getText() + "',"
+                    + "nome='" + txtNome.getText() + "',"
+                    + "descricao='" + txtDesc.getText()
+                    + "' where sigla=" + "'" + txtSigla.getText() + "'";
+            int i = 0;
+            i = stmt.executeUpdate(sql);//executando o comando sql
+            int y = 0;
+            stmt.close();
+            y = stmt.CLOSE_CURRENT_RESULT;
+            if (i > 0) {
+                JOptionPane.showMessageDialog(null, "Cadastro alterado com sucesso!");
+                abreTabela();
             }
+        } catch (ClassNotFoundException e) {
+            System.out.println(e);
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
     }//GEN-LAST:event_btnAlterarActionPerformed
 
     private void btnDeletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeletarActionPerformed
@@ -416,28 +419,28 @@ public class MainFrame extends javax.swing.JFrame {
         String a = txtSigla.getText();
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/db_java", 
-            "root", "");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/db_java",
+                    "root", "");
             stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
-            ResultSet.CONCUR_UPDATABLE);
-             String sql = query1 + "'" + txtSigla.getText() + "')";
+                    ResultSet.CONCUR_UPDATABLE);
+            String sql = query1 + "'" + txtSigla.getText() + "')";
 
             int i = 0;
             i = stmt.executeUpdate(sql);//executando o comando sql
             stmt.close();
             if (i > 0) {
-            JOptionPane.showMessageDialog(null, "Cadastro deletado com sucesso!");
-             // limpando campos
-            txtSigla.setText("");
-            txtNome.setText("");
-            txtDesc.setText("");
-            abreTabela();
-             }
+                JOptionPane.showMessageDialog(null, "Cadastro deletado com sucesso!");
+                // limpando campos
+                txtSigla.setText("");
+                txtNome.setText("");
+                txtDesc.setText("");
+                abreTabela();
+            }
         } catch (ClassNotFoundException e) {
             System.out.println(e);
         } catch (SQLException e) {
             System.out.println(e);
-            }
+        }
     }//GEN-LAST:event_btnDeletarActionPerformed
 
     private void btnPrimeiroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrimeiroActionPerformed
@@ -446,7 +449,7 @@ public class MainFrame extends javax.swing.JFrame {
             atualiza_campos();
         } catch (SQLException e) {
             System.out.println(e);
-            }
+        }
     }//GEN-LAST:event_btnPrimeiroActionPerformed
 
     private void btnAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnteriorActionPerformed
@@ -455,7 +458,7 @@ public class MainFrame extends javax.swing.JFrame {
             atualiza_campos();
         } catch (SQLException e) {
             System.out.println(e);
-            }
+        }
     }//GEN-LAST:event_btnAnteriorActionPerformed
 
     private void btnProximoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProximoActionPerformed
@@ -464,7 +467,7 @@ public class MainFrame extends javax.swing.JFrame {
             atualiza_campos();
         } catch (SQLException e) {
             System.out.println(e);
-            }
+        }
     }//GEN-LAST:event_btnProximoActionPerformed
 
     private void btnUltimoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUltimoActionPerformed
@@ -473,12 +476,18 @@ public class MainFrame extends javax.swing.JFrame {
             atualiza_campos();
         } catch (SQLException e) {
             System.out.println(e);
-            }
+        }
     }//GEN-LAST:event_btnUltimoActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         abreTabela();
     }//GEN-LAST:event_formWindowOpened
+
+    private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
+        txtSigla.setText("");
+        txtNome.setText("");
+        txtDesc.setText("");
+    }//GEN-LAST:event_btnLimparActionPerformed
 
     /**
      * @param args the command line arguments
